@@ -1,0 +1,90 @@
+
+# Formats
+EXIM_FT_GD      .*?(?=:\s)
+EXIM_FT_QS         (\").*(\")
+EXIM_FT_USER    [a-zA-Z0-9._\-\$\{\}\`=+]+
+EXIM_FT_ID      ([0-9A-Za-z]{6}-[0-9A-Za-z]{6}-[0-9A-Za-z]{2})
+EXIM_FT_FLAG    (<=|[-=>*]>|[*]{2}|==)
+EXIM_FT_DATE    %{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{TIME}
+EXIM_FT_REJ_REA %{EXIM_FT_GD}|%{GREEDYDATA}
+EXIM_FT_ERR_TEX (%{QS}|%{GREEDYDATA})
+EXIM_FT_ERR_REA %{EXIM_FT_GD}|%{GREEDYDATA}
+
+# Attributes
+EXIM_EMAIL    (%{EXIM_FT_USER}@%{HOSTNAME})|(%{EXIM_FT_USER})
+EXIM_REM_HOST %{HOSTNAME:[exim][msg][remote][hostname]}
+EXIM_REM_HELO \(%{NOTSPACE:[exim][msg][remote][heloname]}\)
+EXIM_REM_ADDR %{IP:[exim][msg][remote][ip]}
+EXIM_CV_VF    (CV=(?<[exim][msg][tls][verified]>yes|no))
+EXIM_CV_IF    (X=%{NOTSPACE:[exim][msg][tls][info]})
+EXIM_CV_DN    (DN=%{EXIM_FT_QS:[exim][msg][tls][dn]})
+EXIM_REC_INN  %{EXIM_EMAIL:[exim][msg][recipient][inner]}
+EXIM_REC_OUT  %{EXIM_EMAIL:[exim][msg][recipient][outer]}
+EXIM_REC_PAT  %{PATH:[exim][msg][recipient][path]}
+EXIM_REJ_REA  %{EXIM_FT_REJ_REA:[exim][msg][state][reason]}
+EXIM_REJ_TEX  %{GREEDYDATA:[exim][msg][state][text]}
+EXIM_ERR_COM  %{QS:[exim][msg][state][command]}
+EXIM_ERR_TEX  %{EXIM_FT_ERR_TEX:[exim][msg][state][text]}
+EXIM_ERR_REA  (%{EXIM_FT_ERR_REA:[exim][msg][state][reason]})
+
+# Strings
+EXIM_STR_SMTP (SMTP (syntax error in|call from|protocol error in))|(SMTP)
+EXIM_STR_FRE  (Frozen|Message is frozen)(%{GREEDYDATA})?|(%{GREEDYDATA})
+EXIM_STR_REJ_MAIL (rejected (EH|HE)LO from)
+
+# Fields
+EXIM_DATE (%{EXIM_FT_DATE:[exim][msg][date]})
+EXIM_ID (%{EXIM_FT_ID:[exim][msg][id]})
+EXIM_FLAG %{EXIM_FT_FLAG:[exim][msg][flag]}
+EXIM_REMOTE (H=)?(%{EXIM_REM_HOST} )?(%{EXIM_REM_HELO} )?\[%{EXIM_REM_ADDR}\]
+EXIM_REPLY (C=%{QS:[exim][msg][remote][reply]})
+EXIM_INTERFACE (I=\[%{IP:[exim][msg][interface][ip]}\](:%{NUMBER:[exim][msg][interface][port]})?)
+EXIM_PROTOCOL (P=%{NOTSPACE:[exim][msg][protocol]})
+EXIM_DKIM (DKIM=%{NOTSPACE:[exim][msg][dkim]})
+EXIM_DKIM_TEX %{GREEDYDATA:[exim][msg][dkim]}
+EXIM_CV (%{EXIM_CV_IF} )?(%{EXIM_CV_VF} )(%{EXIM_CV_DN})?
+EXIM_CHUNKING (?<[exim][msg][chunking]>K)
+EXIM_SIZE (S=%{NUMBER:[exim][msg][size]})
+EXIM_HID (id=%{NOTSPACE:[exim][msg][header][id]})
+EXIM_SUBJECT (T=%{QS:[exim][msg][subject]})
+EXIM_PID \[%{POSINT}\]
+EXIM_T ((QT|D)=(%{NUMBER:[exim][msg][t][d]}d)?(%{NUMBER:[exim][msg][t][h]}h)?(%{NUMBER:[exim][msg][t][m]}m)?(%{NUMBER:[exim][msg][t][s]}s)?)
+EXIM_SENDER (F=)?(<)?%{EXIM_EMAIL:[exim][msg][sender]}(>)?|(<>)
+EXIM_RECIEVER ((%{EXIM_REC_INN})|(%{EXIM_REC_PAT}))?( <%{EXIM_REC_OUT}>)?
+EXIM_ROUTER (R=%{NOTSPACE:[exim][msg][router]})
+EXIM_TRANSPORT (T=%{NOTSPACE:[exim][msg][transport]})
+EXIM_USER (U=%{USER:[exim][msg][user]})
+EXIM_REFERENCE (R=%{NOTSPACE:[exim][msg][state][text]})
+EXIM_FAIL (%{EXIM_FT_GD:[exim][msg][state][reason]}|%{GREEDYDATA:[exim][msg][state][reason]})(: %{GREEDYDATA:[exim][msg][state][text]})?
+EXIM_DEFER (\(%{NUMBER:[exim][msg][state][code]}\)( %{EXIM_REMOTE_HOST} )?(%{EXIM_INTERFACE})?(: %{GREEDYDATA:[exim][msg][state][reason]}))
+EXIM_REJECT (%{EXIM_REJ_REA})(: %{EXIM_REJ_TEX})?
+EXIM_ERROR_TLS (%{EXIM_ERR_REA})(: %{EXIM_ERR_TEX})?
+EXIM_FROZEN (%{EXIM_STR_FRE:[exim][msg][state][reason]})
+
+# Begins
+EXIM_BEG_FL (%{EXIM_DATE} )(%{EXIM_ID} )(%{EXIM_FLAG} )
+EXIM_BEG_LT (%{EXIM_DATE} )(%{EXIM_ID} )
+
+# Messages
+###########
+EXIM_MSG_IN           (%{EXIM_BEG_FL})(%{EXIM_SENDER} )(%{EXIM_REMOTE} )?(%{EXIM_INTERFACE} )?(%{EXIM_PROTOCOL} )?(%{EXIM_CV})?(%{EXIM_CHUNKING} )?(%{EXIM_SIZE} )(%{EXIM_DKIM} )?(%{EXIM_HID})?( %{EXIM_SUBJECT})?
+EXIM_MSG_BOUNCE       (%{EXIM_BEG_FL})(%{EXIM_SENDER} )(%{EXIM_REFERENCE} )(%{EXIM_USER} )(%{EXIM_PROTOCOL} )(%{EXIM_SIZE} )(%{EXIM_SUBJECT})
+EXIM_MSG_FAIL         (%{EXIM_BEG_FL})(%{EXIM_RECIEVER})(( %{EXIM_ROUTER} )(%{EXIM_TRANSPORT} )(%{EXIM_REMOTE} )?(%{EXIM_INTERFACE} )?(%{EXIM_CV})?)?(: %{EXIM_FAIL})
+EXIM_MSG_OUT1         (%{EXIM_BEG_FL})(%{EXIM_RECIEVER} )?(%{EXIM_SENDER} )?(%{EXIM_ROUTER} )(%{EXIM_TRANSPORT})( %{EXIM_REMOTE} )(%{EXIM_INTERFACE} )(%{EXIM_CV} )?(%{EXIM_CHUNKING} )?(%{EXIM_REPLY})
+EXIM_MSG_OUT2         (%{EXIM_BEG_FL})(%{EXIM_RECIEVER} )(%{EXIM_SENDER} )?(%{EXIM_ROUTER} )(%{EXIM_TRANSPORT})
+EXIM_MSG_COMPL        (%{EXIM_BEG_LT})(Completed )(%{EXIM_T})
+EXIM_MSG_DEFER        (%{EXIM_BEG_FL})(%{EXIM_RECIEVER} )?(%{EXIM_ROUTER} )?(%{EXIM_TRANSPORT} )?((routing )?defer %{EXIM_DEFER})
+EXIM_MSG_ERROR_TLS    (%{EXIM_DATE} )(TLS error on connection from )(%{EXIM_REMOTE} )(%{EXIM_INTERFACE} )(%{EXIM_ERROR_TLS})
+EXIM_MSG_ERROR_SSL    (%{EXIM_DATE} )(%{EXIM_REMOTE} )(SSL verify error: (.* error=)?)(%{EXIM_ERROR_TLS})
+EXIM_MSG_ERROR_SMTP1  (%{EXIM_DATE} )(%{EXIM_ERR_REA}) SMTP command from (%{EXIM_REMOTE} )?(%{EXIM_INTERFACE} )(%{EXIM_T})?
+EXIM_MSG_ERROR_SMTP2  (%{EXIM_BEG_LT})(%{EXIM_REMOTE})(: %{EXIM_ERR_REA})(: %{EXIM_ERR_TEX})?
+EXIM_MSG_ERROR_SMTP3  (%{EXIM_DATE} )(%{EXIM_STR_SMTP} )(%{EXIM_ERR_COM} )?(%{EXIM_REMOTE} )(%{EXIM_INTERFACE} )(%{EXIM_ERR_REA})(: %{EXIM_ERR_TEX})?
+EXIM_MSG_REJECT_MAIL1 (%{EXIM_DATE} )(%{EXIM_REMOTE} )(%{EXIM_INTERFACE} )(%{EXIM_CV})?rejected MAIL (%{EXIM_SENDER})(: %{EXIM_REJECT})
+EXIM_MSG_REJECT_MAIL2 (%{EXIM_DATE} )rejected MAIL from (%{EXIM_REMOTE} )(%{EXIM_INTERFACE}: )(%{EXIM_REJECT})
+EXIM_MSG_REJECT_MAIL3 (%{EXIM_DATE} )(%{EXIM_REJ_REA})(: %{EXIM_SENDER} )(%{EXIM_REMOTE} )(%{EXIM_INTERFACE} )(%{EXIM_REJ_TEX})
+EXIM_MSG_REJECT_RCPT1 (%{EXIM_DATE} )(%{EXIM_REMOTE} )(%{EXIM_INTERFACE} )(%{EXIM_CV})?(%{EXIM_SENDER} )?rejected RCPT(%{EXIM_RECIEVER})(: %{EXIM_REJECT})
+EXIM_MSG_REJECT_RCPT2 (%{EXIM_DATE} )(%{EXIM_REMOTE} )(%{EXIM_INTERFACE} )(%{EXIM_REJ_TEX})(: %{EXIM_REJ_REA})
+EXIM_MSG_REJECT_XPRN  (%{EXIM_DATE} )(%{EXIM_REMOTE} )(%{EXIM_INTERFACE} )(%{EXIM_CV})?(%{EXIM_SENDER} )?rejected EXPN (%{EXIM_REJ_TEX})
+EXIM_MSG_REJECT_HELO  (%{EXIM_DATE} )(%{EXIM_STR_REJ_MAIL}) (%{EXIM_REMOTE} )?(%{EXIM_INTERFACE}: )(%{EXIM_REJECT})
+EXIM_MSG_FROZEN       (%{EXIM_BEG_LT})(%{EXIM_SENDER}: )?(%{EXIM_FROZEN})
+EXIM_MSG_DKIM         (%{EXIM_BEG_LT})(DKIM: )(%{EXIM_DKIM_TEX})
