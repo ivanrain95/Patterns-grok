@@ -3,7 +3,7 @@
 EXIM_FT_GD      .*?(?=:\s)
 EXIM_FT_QS         (\").*(\")
 EXIM_FT_USER    [a-zA-Z0-9._\-\$\{\}\`=+]+
-EXIM_FT_ID      ([0-9A-Za-z]{6}-[0-9A-Za-z]{6}-[0-9A-Za-z]{2})
+EXIM_FT_ID      ([0-9A-Za-z]{6}-[0-9A-Za-z]{12}-[0-9A-Za-z]{4})
 EXIM_FT_FLAG    (<=|[-=>*]>|[*]{2}|==)
 EXIM_FT_DATE    %{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{TIME}
 EXIM_FT_REJ_REA %{EXIM_FT_GD}|%{GREEDYDATA}
