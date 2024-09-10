@@ -1,23 +1,24 @@
-IIS_TIMESTAMP %{TIMESTAMP_ISO8601:[timestamp]}
-IIS_EXGE_IP %{IPORHOST:[ip]}
-IIS_METHOD %{WORD:[method]}
-IIS_URI %{URIPATH:[uri]}
-IIS_QUERY %{NOTSPACE:[query]}
-IIS_PORT %{NUMBER:[port]}
-IIS_USERNAME %{NOTSPACE:[username]}
-IIS_CLIENT_IP %{IPORHOST:[clientip]}
-IIS_USERAGENT %{NOTSPACE:[useragent]}
-IIS_REF %{NOTSPACE:[referer]}
-IIS_STATUS %{NUMBER:[status]}
-IIS_SUBSTATUS %{NUMBER:[substatus]}
-IIS_WIN32STATUS %{NUMBER:[win32status]}
-IIS_TIMETAKEN %{NUMBER:[timetaken]}
+IIS_TIMESTAMP %{TIMESTAMP_ISO8601:timestamp}
+IIS_EXGE_IP %{IPORHOST:ip}
+IIS_METHOD %{WORD:method}
+IIS_URI %{URIPATH:uri}
+IIS_QUERY %{NOTSPACE:query}
+IIS_PORT %{NUMBER:port}
+IIS_USERNAME %{NOTSPACE:username}
+IIS_CLIENT_IP %{IPORHOST:clientip}
+IIS_USERAGENT %{NOTSPACE:useragent}
+IIS_REF %{NOTSPACE:referer}
+IIS_STATUS %{NUMBER:status}
+IIS_SUBSTATUS %{NUMBER:substatus}
+IIS_WIN32STATUS %{NUMBER:win32status}
+IIS_TIMETAKEN %{NUMBER:timetaken}
 
-IIS_SITEMANE %{WORD:[sitename]}
+IIS_SITEMANE %{WORD:sitename}
 
 
 
-IIS_MSG_01 %{IIS_TIMESTAMP} %{IIS_EXGE_IP} %{IIS_METHOD} %{IIS_URI} %{IIS_QUERY} %{IIS_PORT} %{IIS_USERNAME} %{IIS_CLIENT_IP} %{IIS_USERAGENT} %{IIS_REF} %{IIS_STATUS} %{IIS_SUBSTATUS} %{IIS_WIN32STATUS} %{IIS_TIMETAKEN} 
+IIS_MSG_01 %{IIS_TIMESTAMP} %{IIS_EXGE_IP} %{IIS_METHOD} %{IIS_URI} %{IIS_QUERY} %{IIS_PORT} %{IIS_USERNAME} %{IIS_CLIENT_IP} %{IIS_USERAGENT} %{IIS_REF} %{IIS_STATUS} %{IIS_SUBSTATUS} %{IIS_WIN32STATUS} %{IIS_TIMETAKEN}
+
 IIS_MSG_02 %{IIS_TIMESTAMP} (-|%{IIS_SITEMANE})
 
-(-|%{WORD:sitename}) (-|%{IPORHOST:computername}) (-|%{IPORHOST:ip}) (-|%{WORD:method}) (-|%{NOTSPACE:uri}) (-|%{NOTSPACE:query}) (-|%{NUMBER:port}) (-|%{NOTSPACE:username}) (-|%{IPORHOST:clientip}) (-|HTTP/%{NUMBER:httpversion}) (-|%{NOTSPACE:useragent}) (-|%{NOTSPACE:cookie}) (-|%{NOTSPACE:referrer}) (-|%{NUMBER:status}) (-|%{NUMBER:substatus}) (-|%{NUMBER:win32status}) (-|%{NUMBER:response_bytes}) (-|%{NUMBER:request_bytes}) (-|%{NUMBER:timetaken}) (-|%{IPORHOST:extip}) (-|%{IPORHOST:realip})
+# (-|%{WORD:sitename}) (-|%{IPORHOST:computername}) (-|%{IPORHOST:ip}) (-|%{WORD:method}) (-|%{NOTSPACE:uri}) (-|%{NOTSPACE:query}) (-|%{NUMBER:port}) (-|%{NOTSPACE:username}) (-|%{IPORHOST:clientip}) (-|HTTP/%{NUMBER:httpversion}) (-|%{NOTSPACE:useragent}) (-|%{NOTSPACE:cookie}) (-|%{NOTSPACE:referrer}) (-|%{NUMBER:status}) (-|%{NUMBER:substatus}) (-|%{NUMBER:win32status}) (-|%{NUMBER:response_bytes}) (-|%{NUMBER:request_bytes}) (-|%{NUMBER:timetaken}) (-|%{IPORHOST:extip}) (-|%{IPORHOST:realip})
